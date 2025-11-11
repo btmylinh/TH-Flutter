@@ -1,4 +1,4 @@
-package com.example.th1
+package com.example.bt2
 
 import io.flutter.embedding.android.FlutterActivity
 

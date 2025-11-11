@@ -1,99 +1,220 @@
-# 💰 Ứng dụng Quản lý Chi tiêu Cá nhân
+# Ứng dụng Sách Điện Tử
 
-Ứng dụng quản lý tài chính cá nhân được xây dựng bằng Flutter, giúp bạn theo dõi thu chi, phân tích chi tiêu và quản lý ngân sách hiệu quả.
+Một ứng dụng đọc sách điện tử được xây dựng bằng Flutter với giao diện hiện đại và nhiều tính năng tùy chỉnh.
 
-## 📱 Tính năng chính
+## 🎯 Mục tiêu
 
-### 1. Quản lý Giao dịch
--  **Thêm giao dịch mới** với các thông tin:
-  - Loại: Thu nhập / Chi tiêu
-  - Số tiền (VND)
-  - Mô tả chi tiết
-  - Danh mục (Ăn uống, Mua sắm, Di chuyển, Lương, Thưởng, v.v.)
-  - Ngày giao dịch
--  **Chỉnh sửa giao dịch** - Tap vào giao dịch để sửa
--  **Xóa giao dịch** - Swipe sang trái với xác nhận
+Xây dựng một ứng dụng đơn giản cho phép người dùng đọc sách điện tử với trải nghiệm người dùng tốt nhất.
 
-### 2. Hiển thị Danh sách
--  **Nhóm theo ngày** - Tự động group giao dịch
--  **Hiển thị thông minh**:
-  - "Hôm nay" cho ngày hiện tại
-  - "Hôm qua" cho ngày trước đó
-  - "Thứ X, dd/MM/yyyy" cho các ngày khác
--  **Pull to refresh** - Vuốt xuống để tải lại
--  **Filter theo tháng** - Lọc giao dịch theo tháng/năm
--  **Tổng quan nhanh**:
-  - Tổng thu nhập
-  - Tổng chi tiêu
-  - Số dư hiện tại
+## ✨ Tính năng
 
-### 3. Thống kê & Biểu đồ
--  **Tổng quan tháng**:
-  - Thu nhập trong tháng
-  - Chi tiêu trong tháng
-  - Số dư tháng
--  **Biểu đồ Tròn (Pie Chart)**:
-  - Tỷ lệ chi tiêu theo danh mục
-  - Interactive - Touch để highlight
-  - Legend chi tiết với màu sắc
--  **Biểu đồ Cột (Bar Chart)**:
-  - Chi tiêu theo ngày trong tháng
-  - Touch tooltip hiển thị chi tiết
-  - Auto scale theo dữ liệu
--  **Thống kê bổ sung**:
-  - Danh mục chi nhiều nhất
-  - Chi tiêu trung bình mỗi ngày
+### 1. Hiển thị Trang Sách (PageView)
 
-### 4. Giao diện & Trải nghiệm
--  **Material Design 3** - Giao diện hiện đại
--  **Animations mượt mà** - Page transitions
--  **Icons đa dạng** - 12+ icons theo danh mục
--  **Responsive** - Hỗ trợ nhiều kích thước màn hình
--  **Tiếng Việt** - Hỗ trợ đầy đủ locale Việt Nam
--  **Empty states** - UI thân thiện khi chưa có dữ liệu
+- ✅ Sử dụng `PageView` để tạo hiệu ứng lật trang mượt mà
+- ✅ Vuốt ngang để chuyển trang
+- ✅ Tự động phân chia nội dung thành các trang hợp lý
 
-## 🚀 Cài đặt
+### 2. Vẽ Văn Bản Tùy Chỉnh (CustomPainter)
 
-### Yêu cầu
-- Flutter SDK 3.0 trở lên
-- Dart SDK 3.0 trở lên
-- Android Studio / VS Code
+- ✅ Sử dụng `CustomPainter` để vẽ văn bản lên canvas
+- ✅ Tùy chỉnh bố cục và kiểu chữ độc đáo
+- ✅ Đường trang trí đầu và cuối trang
+- ✅ Căn lề và khoảng cách dòng tối ưu
 
-### Các bước cài đặt
+### 3. Lưu Trữ Cài Đặt (SharedPreferences)
 
-1. **Cài đặt dependencies**
-```bash
-flutter pub get
+- ✅ Lưu kích thước font chữ
+- ✅ Lưu chế độ tối/sáng
+- ✅ Lưu trang cuối cùng đã đọc
+- ✅ Lưu chương hiện tại
+- ✅ Tự động khôi phục khi mở lại app
+
+### 4. Điều Hướng & UI (Scaffold, AppBar, BottomNavigationBar)
+
+- ✅ AppBar với tiêu đề và các nút điều khiển
+- ✅ BottomNavigationBar với 3 tùy chọn:
+  - Mở mục lục
+  - Chuyển chương trước
+  - Chuyển chương sau
+- ✅ FloatingActionButton để xem thông tin và tiến độ
+- ✅ Ẩn/hiện thanh điều khiển khi tap vào màn hình
+
+### 5. Xử Lý Tệp (Assets)
+
+- ✅ Đọc nội dung sách từ file JSON trong assets
+- ✅ Parse dữ liệu JSON thành model
+- ✅ Xử lý lỗi khi tải file
+
+### 6. Tính năng Bổ Sung
+
+- ✅ Chế độ tối/sáng
+- ✅ Điều chỉnh kích thước chữ (12-32)
+- ✅ Mục lục với khả năng chuyển chương nhanh
+- ✅ Hiển thị tiến độ đọc
+- ✅ Thông tin sách và vị trí đọc hiện tại
+- ✅ Dialog cài đặt với preview trực tiếp
+- ✅ UI responsive và mượt mà
+
+## 📁 Cấu Trúc Dự Án
+
+```
+lib/
+├── main.dart                          # Entry point của app
+├── models/
+│   └── book.dart                      # Model cho Book và Chapter
+├── services/
+│   ├── book_service.dart              # Service để đọc file sách
+│   └── preferences_service.dart       # Service quản lý SharedPreferences
+├── screens/
+│   └── book_reader_screen.dart        # Màn hình đọc sách chính
+└── widgets/
+    ├── book_page_painter.dart         # CustomPainter vẽ trang sách
+    ├── table_of_contents.dart         # Dialog mục lục
+    └── settings_dialog.dart           # Dialog cài đặt
+
+assets/
+└── book.json                          # File dữ liệu sách (Truyện Kiều)
 ```
 
-2. **Chạy ứng dụng**
-```bash
-flutter run
+## 🛠️ Công Nghệ Sử Dụng
+
+- **Flutter SDK**: Framework chính
+- **shared_preferences**: Lưu trữ cài đặt người dùng
+- **Material Design 3**: Giao diện hiện đại
+- **CustomPainter**: Vẽ văn bản tùy chỉnh
+- **PageView**: Hiệu ứng lật trang
+- **JSON**: Format dữ liệu sách
+
+## 🚀 Cách Chạy Ứng Dụng
+
+1. **Cài đặt Flutter**:
+
+   ```bash
+   # Kiểm tra Flutter đã cài đặt chưa
+   flutter doctor
+   ```
+
+2. **Cài đặt dependencies**:
+
+   ```bash
+   flutter pub get
+   ```
+
+3. **Chạy ứng dụng**:
+
+   ```bash
+   # Chạy trên emulator/device
+   flutter run
+
+   # Hoặc chạy trên Chrome (web)
+   flutter run -d chrome
+   ```
+
+## 📖 Hướng Dẫn Sử Dụng
+
+### Đọc Sách
+
+1. Mở app, sách sẽ tự động tải
+2. Vuốt trái/phải để chuyển trang
+3. Tap vào màn hình để ẩn/hiện thanh điều khiển
+
+### Điều Chỉnh Cài Đặt
+
+1. Nhấn nút **Settings** (⚙️) trên AppBar
+2. Kéo thanh trượt để điều chỉnh kích thước chữ
+3. Xem preview trực tiếp
+4. Nhấn "Áp dụng" để lưu
+
+### Chuyển Đổi Chế Độ Tối/Sáng
+
+- Nhấn nút **🌙/☀️** trên AppBar
+- Cài đặt được lưu tự động
+
+### Mục Lục
+
+1. Nhấn nút "Mục lục" ở thanh dưới
+2. Chọn chương muốn đọc
+3. Chương hiện tại được highlight
+
+### Xem Tiến Độ
+
+- Nhấn nút **%** (FloatingActionButton) để xem % đã đọc
+- Nhấn nút **ℹ️** để xem thông tin chi tiết
+
+## 📝 Thêm Sách Mới
+
+Để thêm sách mới, chỉnh sửa file `assets/book.json`:
+
+```json
+{
+  "title": "Tên sách",
+  "author": "Tác giả",
+  "chapters": [
+    {
+      "title": "Tên chương",
+      "content": "Nội dung chương..."
+    }
+  ]
+}
 ```
 
-## 📖 Hướng dẫn sử dụng
+## 🎨 Tùy Chỉnh Giao Diện
 
-### Thêm giao dịch
-1. Nhấn nút + ở góc dưới
-2. Chọn loại (Chi tiêu/Thu nhập)
-3. Nhập số tiền, mô tả, chọn danh mục và ngày
-4. Nhấn THÊM GIAO DỊCH
+### Thay đổi màu chủ đề
 
-### Chỉnh sửa/Xóa
-- **Sửa**: Tap vào giao dịch
-- **Xóa**: Swipe sang trái
+Chỉnh sửa trong `lib/main.dart`:
 
-### Xem thống kê
-- Chuyển sang tab Thống kê
-- Chọn tháng để xem biểu đồ
+```dart
+colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+```
 
-## 🏗️ Kiến trúc
+### Thay đổi font chữ mặc định
 
-- **Framework**: Flutter 3.x
-- **Database**: SQLite (sqflite)
-- **State Management**: Provider
-- **Charts**: fl_chart
+Chỉnh sửa trong `lib/widgets/book_page_painter.dart`:
+
+```dart
+fontFamily: 'Serif',
+```
+
+## 📱 Screenshots
+
+Ứng dụng hỗ trợ:
+
+- 📖 Chế độ sáng với nền trắng
+- 🌙 Chế độ tối với nền đen
+- 📏 Điều chỉnh kích thước chữ linh hoạt
+- 📚 Mục lục dễ điều hướng
+- ⚙️ Cài đặt trực quan
+
+## 🔧 Yêu Cầu Hệ Thống
+
+- Flutter SDK: >= 3.9.2
+- Dart SDK: >= 3.0.0
+- Android: minSdkVersion 21 trở lên
+- iOS: iOS 11 trở lên
+
+## 📚 Kiến Thức Áp Dụng
+
+Dự án này áp dụng các kiến thức từ Flutter:
+
+- **Chương 8**: Xử lý tệp từ assets
+- **Chương 11**: SharedPreferences để lưu cài đặt
+- **Chương 13**: CustomPainter để vẽ văn bản
+- **Chương 16**:
+  - PageView cho hiệu ứng lật trang
+  - Scaffold, AppBar, BottomNavigationBar
+  - Dialog và các widget phức tạp
+
+## 🤝 Đóng Góp
+
+Mọi đóng góp đều được chào đón! Hãy tạo Pull Request hoặc Issue nếu bạn có ý tưởng cải thiện.
+
+## 📄 License
+
+Dự án này được tạo ra cho mục đích học tập.
 
 ---
 
-**Made with ❤️ using Flutter**
+**Tác giả**: Được tạo bởi GitHub Copilot  
+**Ngày tạo**: 11/11/2025  
+**Sách mẫu**: Truyện Kiều - Nguyễn Du
