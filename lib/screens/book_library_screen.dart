@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/book.dart';
 import '../services/book_service.dart';
 import 'book_reader_screen.dart';
+import '../theme/theme_controller.dart';
 
 class BookLibraryScreen extends StatefulWidget {
   const BookLibraryScreen({super.key});
@@ -81,6 +82,72 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
         title: const Text('Thư Viện Sách'),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: ThemeController.instance.themeModeNotifier,
+            builder: (context, mode, _) {
+              IconData icon = switch (mode) {
+                ThemeMode.light => Icons.light_mode_rounded,
+                ThemeMode.dark => Icons.dark_mode_rounded,
+                ThemeMode.system => Icons.brightness_auto_rounded,
+              };
+              return PopupMenuButton<ThemeMode>(
+                tooltip: 'Chế độ giao diện',
+                icon: Icon(icon),
+                onSelected: (value) {
+                  ThemeController.instance.setThemeMode(value);
+                },
+                itemBuilder: (context) => <PopupMenuEntry<ThemeMode>>[
+                  PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.system,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.brightness_auto_rounded,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Theo hệ thống'),
+                        const Spacer(),
+                        if (mode == ThemeMode.system) const Icon(Icons.check_rounded),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.light,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.light_mode_rounded,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Sáng'),
+                        const Spacer(),
+                        if (mode == ThemeMode.light) const Icon(Icons.check_rounded),
+                      ],
+                    ),
+                  ),
+                  PopupMenuItem<ThemeMode>(
+                    value: ThemeMode.dark,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.dark_mode_rounded,
+                          color: Theme.of(context).iconTheme.color,
+                        ),
+                        const SizedBox(width: 12),
+                        const Text('Tối'),
+                        const Spacer(),
+                        if (mode == ThemeMode.dark) const Icon(Icons.check_rounded),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
       ),
       body: _buildBody(),
     );

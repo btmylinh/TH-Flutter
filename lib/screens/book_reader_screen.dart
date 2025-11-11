@@ -4,6 +4,7 @@ import '../services/preferences_service.dart';
 import '../widgets/book_page_painter.dart';
 import '../widgets/table_of_contents.dart';
 import '../widgets/settings_dialog.dart';
+import '../theme/theme_controller.dart';
 
 class BookReaderScreen extends StatefulWidget {
   final Book book;
@@ -21,7 +22,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
   int _currentChapterIndex = 0;
   int _currentPageIndex = 0;
   double _fontSize = 18.0;
-  bool _isDarkMode = false;
   bool _showControls = true;
 
   @override
@@ -32,13 +32,11 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
 
   Future<void> _loadPreferences() async {
     final fontSize = await _prefsService.getFontSize();
-    final isDarkMode = await _prefsService.getIsDarkMode();
     final currentChapter = await _prefsService.getCurrentChapter();
     final currentPage = await _prefsService.getCurrentPage();
 
     setState(() {
       _fontSize = fontSize;
-      _isDarkMode = isDarkMode;
       _currentChapterIndex = currentChapter;
       _currentPageIndex = currentPage;
     });
@@ -57,14 +55,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     await _prefsService.setFontSize(size);
     setState(() {
       _fontSize = size;
-    });
-  }
-
-  Future<void> _toggleDarkMode() async {
-    final newMode = !_isDarkMode;
-    await _prefsService.setIsDarkMode(newMode);
-    setState(() {
-      _isDarkMode = newMode;
     });
   }
 
@@ -154,9 +144,6 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
     return pages;
   }
 
-  Color get _backgroundColor => _isDarkMode ? Colors.grey[900]! : Colors.white;
-  Color get _textColor => _isDarkMode ? Colors.white : Colors.black87;
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -173,10 +160,69 @@ class _BookReaderScreenState extends State<BookReaderScreen> {
               backgroundColor: surfaceColor,
               foregroundColor: onSurfaceColor,
               actions: [
-                IconButton(
-                  icon: Icon(_isDarkMode ? Icons.light_mode : Icons.dark_mode),
-                  onPressed: _toggleDarkMode,
-                  tooltip: 'Chế độ ${_isDarkMode ? 'sáng' : 'tối'}',
+                ValueListenableBuilder<ThemeMode>(
+                  valueListenable: ThemeController.instance.themeModeNotifier,
+                  builder: (context, mode, _) {
+                    IconData icon = switch (mode) {
+                      ThemeMode.light => Icons.light_mode_rounded,
+                      ThemeMode.dark => Icons.dark_mode_rounded,
+                      ThemeMode.system => Icons.brightness_auto_rounded,
+                    };
+                    return PopupMenuButton<ThemeMode>(
+                      tooltip: 'Chế độ giao diện',
+                      icon: Icon(icon),
+                      onSelected: (value) {
+                        ThemeController.instance.setThemeMode(value);
+                      },
+                      itemBuilder: (context) => <PopupMenuEntry<ThemeMode>>[
+                        PopupMenuItem<ThemeMode>(
+                          value: ThemeMode.system,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.brightness_auto_rounded,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              const SizedBox(width: 12),
+                              const Text('Theo hệ thống'),
+                              const Spacer(),
+                              if (mode == ThemeMode.system) const Icon(Icons.check_rounded),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<ThemeMode>(
+                          value: ThemeMode.light,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.light_mode_rounded,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              const SizedBox(width: 12),
+                              const Text('Sáng'),
+                              const Spacer(),
+                              if (mode == ThemeMode.light) const Icon(Icons.check_rounded),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<ThemeMode>(
+                          value: ThemeMode.dark,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.dark_mode_rounded,
+                                color: Theme.of(context).iconTheme.color,
+                              ),
+                              const SizedBox(width: 12),
+                              const Text('Tối'),
+                              const Spacer(),
+                              if (mode == ThemeMode.dark) const Icon(Icons.check_rounded),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.settings),
