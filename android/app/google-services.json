@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "534099632201",
+    "project_id": "ltmobileth2",
+    "storage_bucket": "ltmobileth2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:534099632201:android:396ad2678cb1f73e0adf98",
+        "android_client_info": {
+          "package_name": "com.example.bt3"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDxHI88O_a-G14OBgOgHwvKhe2pOo4eBnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
