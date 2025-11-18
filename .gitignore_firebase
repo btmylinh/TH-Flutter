@@ -1,0 +1,23 @@
+# Firebase configuration files (chứa thông tin nhạy cảm)
+# Uncomment dòng dưới nếu muốn bảo mật Firebase config
+# lib/firebase_options.dart
+
+# Google Services (Android)
+android/app/google-services.json
+
+# Google Services (iOS)
+ios/Runner/GoogleService-Info.plist
+ios/firebase_app_id_file.json
+
+# Firebase debug files
+.firebase/
+firebase-debug.log
+firestore-debug.log
+firestore.rules
+storage.rules
+database.rules.json
+
+# Environment files
+.env
+.env.local
+.env.*.local

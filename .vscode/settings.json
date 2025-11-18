@@ -1,17 +1,3 @@
 {
-    "workbench.colorCustomizations": {
-        "activityBar.activeBackground": "#dfe5c7",
-        "activityBar.background": "#dfe5c7",
-        "activityBar.foreground": "#15202b",
-        "activityBar.inactiveForeground": "#15202b99",
-        "activityBarBadge.background": "#67a8b8",
-        "activityBarBadge.foreground": "#15202b",
-        "commandCenter.border": "#15202b99",
-        "sash.hoverBorder": "#dfe5c7",
-        "titleBar.activeBackground": "#cbd5a4",
-        "titleBar.activeForeground": "#15202b",
-        "titleBar.inactiveBackground": "#cbd5a499",
-        "titleBar.inactiveForeground": "#15202b99"
-    },
-    "peacock.color": "#cbd5a4"
+  "cmake.ignoreCMakeListsMissing": true
 }
