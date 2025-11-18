@@ -1,220 +1,398 @@
-# Ứng dụng Sách Điện Tử
+# Hệ thống Đánh giá Nhà hàng (Restaurant Rating System)
 
-Một ứng dụng đọc sách điện tử được xây dựng bằng Flutter với giao diện hiện đại và nhiều tính năng tùy chỉnh.
+Ứng dụng Flutter toàn diện sử dụng Firebase và Clean Architecture để xây dựng hệ thống đánh giá nhà hàng với các tính năng nâng cao.
 
 ## 🎯 Mục tiêu
 
-Xây dựng một ứng dụng đơn giản cho phép người dùng đọc sách điện tử với trải nghiệm người dùng tốt nhất.
+Xây dựng một ứng dụng cho phép người dùng:
 
-## ✨ Tính năng
+- Xem danh sách các nhà hàng
+- Đọc và gửi đánh giá kèm theo ảnh
+- Nhận thông báo về đánh giá mới
+- Quản lý hồ sơ cá nhân
 
-### 1. Hiển thị Trang Sách (PageView)
+## ✨ Tính năng chính
 
-- ✅ Sử dụng `PageView` để tạo hiệu ứng lật trang mượt mà
-- ✅ Vuốt ngang để chuyển trang
-- ✅ Tự động phân chia nội dung thành các trang hợp lý
+### 1. Xác thực và Quản lý Người dùng
 
-### 2. Vẽ Văn Bản Tùy Chỉnh (CustomPainter)
+- ✅ Đăng ký/Đăng nhập với Firebase Authentication
+- ✅ Lưu trữ hồ sơ người dùng trong Cloud Firestore
+- ✅ Quản lý phiên đăng nhập
 
-- ✅ Sử dụng `CustomPainter` để vẽ văn bản lên canvas
-- ✅ Tùy chỉnh bố cục và kiểu chữ độc đáo
-- ✅ Đường trang trí đầu và cuối trang
-- ✅ Căn lề và khoảng cách dòng tối ưu
+### 2. Dữ liệu Thời gian Thực
 
-### 3. Lưu Trữ Cài Đặt (SharedPreferences)
+- ✅ Cloud Firestore để lưu trữ nhà hàng, đánh giá, và điểm số
+- ✅ StreamBuilder cho dữ liệu real-time
+- ✅ Tự động cập nhật UI khi có thay đổi
 
-- ✅ Lưu kích thước font chữ
-- ✅ Lưu chế độ tối/sáng
-- ✅ Lưu trang cuối cùng đã đọc
-- ✅ Lưu chương hiện tại
-- ✅ Tự động khôi phục khi mở lại app
+### 3. Tải và Quản lý Ảnh
 
-### 4. Điều Hướng & UI (Scaffold, AppBar, BottomNavigationBar)
+- ✅ Chọn ảnh từ thư viện hoặc chụp ảnh mới (image_picker)
+- ✅ Tải ảnh lên Firebase Cloud Storage
+- ✅ Hiển thị ảnh với cached_network_image
 
-- ✅ AppBar với tiêu đề và các nút điều khiển
-- ✅ BottomNavigationBar với 3 tùy chọn:
-  - Mở mục lục
-  - Chuyển chương trước
-  - Chuyển chương sau
-- ✅ FloatingActionButton để xem thông tin và tiến độ
-- ✅ Ẩn/hiện thanh điều khiển khi tap vào màn hình
+### 4. Thông báo Push
 
-### 5. Xử Lý Tệp (Assets)
+- ✅ Firebase Cloud Messaging (FCM)
+- ✅ Thông báo khi có đánh giá mới
+- ✅ Xử lý thông báo foreground/background
 
-- ✅ Đọc nội dung sách từ file JSON trong assets
-- ✅ Parse dữ liệu JSON thành model
-- ✅ Xử lý lỗi khi tải file
+### 5. Cloud Functions (Backend Serverless)
 
-### 6. Tính năng Bổ Sung
+- ✅ Tự động tính điểm trung bình khi có đánh giá mới
+- ✅ Gửi thông báo đến người dùng quan tâm
+- ✅ Xóa ảnh khi đánh giá bị xóa
 
-- ✅ Chế độ tối/sáng
-- ✅ Điều chỉnh kích thước chữ (12-32)
-- ✅ Mục lục với khả năng chuyển chương nhanh
-- ✅ Hiển thị tiến độ đọc
-- ✅ Thông tin sách và vị trí đọc hiện tại
-- ✅ Dialog cài đặt với preview trực tiếp
-- ✅ UI responsive và mượt mà
+### 6. Clean Architecture
 
-## 📁 Cấu Trúc Dự Án
+- ✅ Tách biệt Domain, Data, và Presentation layers
+- ✅ Dependency Injection với GetIt
+- ✅ State Management với BLoC pattern
+- ✅ Repository pattern cho data access
+
+## 🏗️ Kiến trúc Dự án
 
 ```
 lib/
-├── main.dart                          # Entry point của app
-├── models/
-│   └── book.dart                      # Model cho Book và Chapter
-├── services/
-│   ├── book_service.dart              # Service để đọc file sách
-│   └── preferences_service.dart       # Service quản lý SharedPreferences
-├── screens/
-│   └── book_reader_screen.dart        # Màn hình đọc sách chính
-└── widgets/
-    ├── book_page_painter.dart         # CustomPainter vẽ trang sách
-    ├── table_of_contents.dart         # Dialog mục lục
-    └── settings_dialog.dart           # Dialog cài đặt
+├── core/
+│   ├── error/
+│   │   └── failures.dart
+│   ├── usecases/
+│   │   └── usecase.dart
+│   └── services/
+│       └── notification_service.dart
+├── data/
+│   ├── datasources/
+│   │   ├── auth_remote_data_source.dart
+│   │   ├── restaurant_remote_data_source.dart
+│   │   └── review_remote_data_source.dart
+│   ├── models/
+│   │   ├── user_model.dart
+│   │   ├── restaurant_model.dart
+│   │   └── review_model.dart
+│   └── repositories/
+│       ├── auth_repository_impl.dart
+│       ├── restaurant_repository_impl.dart
+│       └── review_repository_impl.dart
+├── domain/
+│   ├── entities/
+│   │   ├── user_entity.dart
+│   │   ├── restaurant_entity.dart
+│   │   └── review_entity.dart
+│   ├── repositories/
+│   │   ├── auth_repository.dart
+│   │   ├── restaurant_repository.dart
+│   │   └── review_repository.dart
+│   └── usecases/
+│       ├── sign_in_with_email.dart
+│       ├── sign_up_with_email.dart
+│       ├── sign_out.dart
+│       ├── get_current_user.dart
+│       ├── get_restaurants.dart
+│       ├── get_reviews.dart
+│       └── add_review.dart
+├── presentation/
+│   ├── bloc/
+│   │   ├── auth/
+│   │   ├── restaurant/
+│   │   └── review/
+│   └── screens/
+│       ├── auth/
+│       ├── home/
+│       └── restaurant/
+├── firebase_options.dart
+├── injection_container.dart
+└── main.dart
 
-assets/
-└── book.json                          # File dữ liệu sách (Truyện Kiều)
+functions/
+├── index.js
+├── package.json
+└── README.md
 ```
 
-## 🛠️ Công Nghệ Sử Dụng
+## 🚀 Cài đặt
 
-- **Flutter SDK**: Framework chính
-- **shared_preferences**: Lưu trữ cài đặt người dùng
-- **Material Design 3**: Giao diện hiện đại
-- **CustomPainter**: Vẽ văn bản tùy chỉnh
-- **PageView**: Hiệu ứng lật trang
-- **JSON**: Format dữ liệu sách
+### Yêu cầu
 
-## 🚀 Cách Chạy Ứng Dụng
+- Flutter SDK (>=3.9.2)
+- Dart SDK
+- Firebase CLI
+- Node.js (cho Cloud Functions)
 
-1. **Cài đặt Flutter**:
+### Bước 1: Clone và cài đặt dependencies
 
-   ```bash
-   # Kiểm tra Flutter đã cài đặt chưa
-   flutter doctor
-   ```
+```bash
+cd baitap3
+flutter pub get
+```
 
-2. **Cài đặt dependencies**:
+### Bước 2: Cấu hình Firebase
 
-   ```bash
-   flutter pub get
-   ```
+1. Tạo project Firebase tại [Firebase Console](https://console.firebase.google.com/)
 
-3. **Chạy ứng dụng**:
+2. Cài đặt Firebase CLI:
 
-   ```bash
-   # Chạy trên emulator/device
-   flutter run
+```bash
+npm install -g firebase-tools
+```
 
-   # Hoặc chạy trên Chrome (web)
-   flutter run -d chrome
-   ```
+3. Đăng nhập Firebase:
 
-## 📖 Hướng Dẫn Sử Dụng
+```bash
+firebase login
+```
 
-### Đọc Sách
+4. Cấu hình FlutterFire:
 
-1. Mở app, sách sẽ tự động tải
-2. Vuốt trái/phải để chuyển trang
-3. Tap vào màn hình để ẩn/hiện thanh điều khiển
+```bash
+dart pub global activate flutterfire_cli
+flutterfire configure
+```
 
-### Điều Chỉnh Cài Đặt
+5. Cập nhật `lib/firebase_options.dart` với thông tin project của bạn
 
-1. Nhấn nút **Settings** (⚙️) trên AppBar
-2. Kéo thanh trượt để điều chỉnh kích thước chữ
-3. Xem preview trực tiếp
-4. Nhấn "Áp dụng" để lưu
+### Bước 3: Cấu hình Firebase Services
 
-### Chuyển Đổi Chế Độ Tối/Sáng
+#### 3.1 Authentication
 
-- Nhấn nút **🌙/☀️** trên AppBar
-- Cài đặt được lưu tự động
+- Vào Firebase Console > Authentication
+- Enable Email/Password sign-in method
 
-### Mục Lục
+#### 3.2 Cloud Firestore
 
-1. Nhấn nút "Mục lục" ở thanh dưới
-2. Chọn chương muốn đọc
-3. Chương hiện tại được highlight
+- Tạo database trong Firestore
+- Deploy Firestore rules:
 
-### Xem Tiến Độ
+```bash
+firebase deploy --only firestore:rules
+```
 
-- Nhấn nút **%** (FloatingActionButton) để xem % đã đọc
-- Nhấn nút **ℹ️** để xem thông tin chi tiết
+#### 3.3 Cloud Storage
 
-## 📝 Thêm Sách Mới
+- Enable Cloud Storage
+- Deploy Storage rules:
 
-Để thêm sách mới, chỉnh sửa file `assets/book.json`:
+```bash
+firebase deploy --only storage
+```
+
+#### 3.4 Cloud Messaging
+
+- Vào Project Settings > Cloud Messaging
+- Lưu Server key (cho backend nếu cần)
+
+### Bước 4: Deploy Cloud Functions
+
+```bash
+cd functions
+npm install
+firebase deploy --only functions
+```
+
+### Bước 5: Thêm dữ liệu mẫu
+
+Sử dụng Firebase Console để thêm dữ liệu mẫu vào collection `restaurants`:
 
 ```json
 {
-  "title": "Tên sách",
-  "author": "Tác giả",
-  "chapters": [
-    {
-      "title": "Tên chương",
-      "content": "Nội dung chương..."
-    }
-  ]
+  "name": "Nhà hàng Phở Việt",
+  "description": "Quán phở truyền thống với hương vị đậm đà",
+  "address": "123 Đường Lê Lợi, Quận 1, TP.HCM",
+  "category": "Món Việt",
+  "imageUrl": "https://example.com/pho.jpg",
+  "averageRating": 0,
+  "reviewCount": 0,
+  "createdAt": "2024-01-01T00:00:00Z"
 }
 ```
 
-## 🎨 Tùy Chỉnh Giao Diện
+### Bước 6: Chạy ứng dụng
 
-### Thay đổi màu chủ đề
-
-Chỉnh sửa trong `lib/main.dart`:
-
-```dart
-colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+```bash
+flutter run
 ```
 
-### Thay đổi font chữ mặc định
+## 📱 Sử dụng
 
-Chỉnh sửa trong `lib/widgets/book_page_painter.dart`:
+### Đăng ký/Đăng nhập
 
-```dart
-fontFamily: 'Serif',
+1. Mở ứng dụng
+2. Nhập email và mật khẩu
+3. Nhấn "Đăng ký" nếu chưa có tài khoản
+
+### Xem và Đánh giá Nhà hàng
+
+1. Danh sách nhà hàng hiển thị ngay sau khi đăng nhập
+2. Chọn một nhà hàng để xem chi tiết
+3. Nhấn "Viết đánh giá" để thêm đánh giá mới
+4. Chọn số sao, viết nhận xét, và thêm ảnh
+5. Nhấn "Gửi đánh giá"
+
+### Nhận Thông báo
+
+- Ứng dụng tự động yêu cầu quyền thông báo
+- Nhận thông báo khi có đánh giá mới cho nhà hàng yêu thích
+
+## 🔧 Công nghệ Sử dụng
+
+### Frontend
+
+- **Flutter**: Framework UI
+- **flutter_bloc**: State management
+- **get_it**: Dependency injection
+- **dartz**: Functional programming (Either type)
+- **equatable**: Value equality
+- **image_picker**: Chọn/chụp ảnh
+- **cached_network_image**: Cache và hiển thị ảnh
+- **flutter_rating_bar**: Widget đánh giá sao
+- **intl**: Format ngày tháng
+
+### Firebase
+
+- **firebase_core**: Firebase initialization
+- **firebase_auth**: Authentication
+- **cloud_firestore**: NoSQL database
+- **firebase_storage**: File storage
+- **firebase_messaging**: Push notifications
+- **flutter_local_notifications**: Local notifications
+
+### Backend
+
+- **Cloud Functions**: Node.js serverless functions
+- **firebase-admin**: Admin SDK
+
+## 📊 Cơ sở Dữ liệu
+
+### Collections
+
+#### users
+
+```
+{
+  id: string,
+  email: string,
+  displayName: string,
+  photoUrl?: string,
+  createdAt: timestamp
+}
 ```
 
-## 📱 Screenshots
+#### restaurants
 
-Ứng dụng hỗ trợ:
+```
+{
+  id: string,
+  name: string,
+  description: string,
+  address: string,
+  category: string,
+  imageUrl: string,
+  averageRating: number,
+  reviewCount: number,
+  createdAt: timestamp
+}
+```
 
-- 📖 Chế độ sáng với nền trắng
-- 🌙 Chế độ tối với nền đen
-- 📏 Điều chỉnh kích thước chữ linh hoạt
-- 📚 Mục lục dễ điều hướng
-- ⚙️ Cài đặt trực quan
+#### reviews
 
-## 🔧 Yêu Cầu Hệ Thống
+```
+{
+  id: string,
+  restaurantId: string,
+  userId: string,
+  userName: string,
+  userPhotoUrl?: string,
+  rating: number,
+  comment: string,
+  imageUrls: string[],
+  createdAt: timestamp
+}
+```
 
-- Flutter SDK: >= 3.9.2
-- Dart SDK: >= 3.0.0
-- Android: minSdkVersion 21 trở lên
-- iOS: iOS 11 trở lên
+## 🔐 Security Rules
 
-## 📚 Kiến Thức Áp Dụng
+### Firestore Rules
 
-Dự án này áp dụng các kiến thức từ Flutter:
+- Users: Chỉ owner mới có thể chỉnh sửa
+- Restaurants: Public read, admin write only
+- Reviews: Public read, authenticated users can create/edit/delete own reviews
 
-- **Chương 8**: Xử lý tệp từ assets
-- **Chương 11**: SharedPreferences để lưu cài đặt
-- **Chương 13**: CustomPainter để vẽ văn bản
-- **Chương 16**:
-  - PageView cho hiệu ứng lật trang
-  - Scaffold, AppBar, BottomNavigationBar
-  - Dialog và các widget phức tạp
+### Storage Rules
 
-## 🤝 Đóng Góp
+- Review images: Max 5MB, image types only
+- Profile images: Max 2MB, owner only
 
-Mọi đóng góp đều được chào đón! Hãy tạo Pull Request hoặc Issue nếu bạn có ý tưởng cải thiện.
+## 🧪 Testing
+
+```bash
+# Run unit tests
+flutter test
+
+# Run integration tests
+flutter test integration_test
+```
+
+## 📦 Build cho Production
+
+### Android
+
+```bash
+flutter build apk --release
+# hoặc
+flutter build appbundle --release
+```
+
+### iOS
+
+```bash
+flutter build ios --release
+```
+
+## 🎓 Kiến thức Đạt được
+
+Dự án này giúp bạn học:
+
+1. ✅ Clean Architecture trong Flutter
+2. ✅ BLoC pattern cho state management
+3. ✅ Firebase Authentication
+4. ✅ Cloud Firestore với real-time updates
+5. ✅ Firebase Cloud Storage
+6. ✅ Firebase Cloud Messaging
+7. ✅ Cloud Functions
+8. ✅ Image picker và upload
+9. ✅ Dependency injection
+10. ✅ Repository pattern
+11. ✅ Error handling với Either
+12. ✅ Security rules cho Firestore và Storage
+
+## 📝 Ghi chú
+
+- Đảm bảo cấu hình đúng Firebase project
+- Kiểm tra permissions cho camera và gallery trên iOS (Info.plist)
+- Thêm google-services.json (Android) và GoogleService-Info.plist (iOS)
+- Cloud Functions cần billing account để deploy
+
+## 🤝 Đóng góp
+
+Mọi đóng góp đều được chào đón! Hãy tạo issue hoặc pull request.
 
 ## 📄 License
 
-Dự án này được tạo ra cho mục đích học tập.
+MIT License
 
----
+## 👨‍💻 Tác giả
 
-**Tác giả**: Được tạo bởi GitHub Copilot  
-**Ngày tạo**: 11/11/2025  
-**Sách mẫu**: Truyện Kiều - Nguyễn Du
+Dự án thực hành Flutter & Firebase
+
+## Getting Started
+
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

@@ -8,28 +8,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:bt2/widgets/settings_dialog.dart';
+import 'package:baitap3/main.dart';
 
 void main() {
-  testWidgets('Settings dialog applies updated font size', (tester) async {
-    double selectedSize = 0;
-    await tester.pumpWidget(
-      MaterialApp(
-        home: SettingsDialog(
-          currentFontSize: 18,
-          onFontSizeChanged: (value) => selectedSize = value,
-        ),
-      ),
-    );
+  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+    // Build our app and trigger a frame.
+    await tester.pumpWidget(const MyApp());
 
-    // Increase font size using the "+" icon.
-    await tester.tap(find.byIcon(Icons.add_rounded));
-    await tester.pumpAndSettle();
+    // Verify that our counter starts at 0.
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
 
-    // Apply the change.
-    await tester.tap(find.text('Áp dụng'));
-    await tester.pumpAndSettle();
+    // Tap the '+' icon and trigger a frame.
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
 
-    expect(selectedSize, greaterThan(18));
+    // Verify that our counter has incremented.
+    expect(find.text('0'), findsNothing);
+    expect(find.text('1'), findsOneWidget);
   });
 }
