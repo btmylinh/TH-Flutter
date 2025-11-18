@@ -30,16 +30,28 @@ class Chapter {
   }
 }
 
+enum BookSource { asset, remote }
+
 class BookInfo {
+  final String id;
   final String title;
   final String author;
   final int chapters;
-  final String path;
+  final BookSource source;
+  final String? assetPath;
+  final String? remoteId;
+  final String? coverUrl;
 
   BookInfo({
+    required this.id,
     required this.title,
     required this.author,
     required this.chapters,
-    required this.path,
+    required this.source,
+    this.assetPath,
+    this.remoteId,
+    this.coverUrl,
   });
+
+  bool get isRemote => source == BookSource.remote;
 }

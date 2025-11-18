@@ -1,11 +1,21 @@
 import 'package:flutter/material.dart';
-import 'screens/book_library_screen.dart';
-import 'theme/theme_controller.dart';
+import 'package:provider/provider.dart';
 
-void main() async {
+import 'providers/reading_settings_provider.dart';
+import 'screens/book_library_screen.dart';
+import 'services/database_service.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await ThemeController.instance.init();
-  runApp(const MyApp());
+  await ReaderDatabase.instance.init();
+  final settingsProvider = ReadingSettingsProvider();
+  await settingsProvider.load();
+  runApp(
+    ChangeNotifierProvider.value(
+      value: settingsProvider,
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,9 +23,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<ThemeMode>(
-      valueListenable: ThemeController.instance.themeModeNotifier,
-      builder: (context, mode, _) {
+    return Consumer<ReadingSettingsProvider>(
+      builder: (context, settings, _) {
         return MaterialApp(
           title: 'Sách Điện Tử',
           theme: ThemeData(
@@ -36,7 +45,7 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
             sliderTheme: const SliderThemeData(
-              showValueIndicator: ShowValueIndicator.always,
+              showValueIndicator: ShowValueIndicator.onDrag,
             ),
             listTileTheme: const ListTileThemeData(
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -88,7 +97,7 @@ class MyApp extends StatelessWidget {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             ),
             sliderTheme: const SliderThemeData(
-              showValueIndicator: ShowValueIndicator.always,
+              showValueIndicator: ShowValueIndicator.onDrag,
             ),
             listTileTheme: const ListTileThemeData(
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -125,7 +134,7 @@ class MyApp extends StatelessWidget {
             ),
             useMaterial3: true,
           ),
-          themeMode: mode,
+          themeMode: settings.themeMode,
           home: const BookLibraryScreen(),
           debugShowCheckedModeBanner: false,
         );

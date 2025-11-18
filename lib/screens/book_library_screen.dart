@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '../models/book.dart';
+import '../providers/reading_settings_provider.dart';
 import '../services/book_service.dart';
 import 'book_reader_screen.dart';
-import '../theme/theme_controller.dart';
 
 class BookLibraryScreen extends StatefulWidget {
   const BookLibraryScreen({super.key});
@@ -39,7 +41,7 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
     }
   }
 
-  Future<void> _openBook(String bookPath) async {
+  Future<void> _openBook(BookInfo info) async {
     // Hiển thị loading
     showDialog(
       context: context,
@@ -48,7 +50,7 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
     );
 
     try {
-      final book = await _bookService.loadBook(bookPath);
+      final book = await _bookService.loadBook(info);
 
       if (!mounted) return;
 
@@ -57,7 +59,12 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
 
       // Mở màn hình đọc sách
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => BookReaderScreen(book: book)),
+        MaterialPageRoute(
+          builder: (context) => BookReaderScreen(
+            book: book,
+            bookId: info.id,
+          ),
+        ),
       );
     } catch (e) {
       if (!mounted) return;
@@ -82,71 +89,8 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
         title: const Text('Thư Viện Sách'),
         centerTitle: true,
         elevation: 0,
-        actions: [
-          ValueListenableBuilder<ThemeMode>(
-            valueListenable: ThemeController.instance.themeModeNotifier,
-            builder: (context, mode, _) {
-              IconData icon = switch (mode) {
-                ThemeMode.light => Icons.light_mode_rounded,
-                ThemeMode.dark => Icons.dark_mode_rounded,
-                ThemeMode.system => Icons.brightness_auto_rounded,
-              };
-              return PopupMenuButton<ThemeMode>(
-                tooltip: 'Chế độ giao diện',
-                icon: Icon(icon),
-                onSelected: (value) {
-                  ThemeController.instance.setThemeMode(value);
-                },
-                itemBuilder: (context) => <PopupMenuEntry<ThemeMode>>[
-                  PopupMenuItem<ThemeMode>(
-                    value: ThemeMode.system,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.brightness_auto_rounded,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Theo hệ thống'),
-                        const Spacer(),
-                        if (mode == ThemeMode.system) const Icon(Icons.check_rounded),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<ThemeMode>(
-                    value: ThemeMode.light,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.light_mode_rounded,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Sáng'),
-                        const Spacer(),
-                        if (mode == ThemeMode.light) const Icon(Icons.check_rounded),
-                      ],
-                    ),
-                  ),
-                  PopupMenuItem<ThemeMode>(
-                    value: ThemeMode.dark,
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.dark_mode_rounded,
-                          color: Theme.of(context).iconTheme.color,
-                        ),
-                        const SizedBox(width: 12),
-                        const Text('Tối'),
-                        const Spacer(),
-                        if (mode == ThemeMode.dark) const Icon(Icons.check_rounded),
-                      ],
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
+        actions: const [
+          _ThemeModeButton(),
         ],
       ),
       body: _buildBody(),
@@ -242,29 +186,13 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
-        onTap: () => _openBook(book.path),
+        onTap: () => _openBook(book),
         borderRadius: BorderRadius.circular(14),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              // Icon sách
-              Container(
-                width: 84,
-                height: 108,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.65),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(Icons.menu_book_rounded, size: 42, color: Colors.white),
-              ),
+              _BookCover(coverUrl: book.coverUrl, source: book.source),
               const SizedBox(width: 16),
               // Thông tin sách
               Expanded(
@@ -317,6 +245,129 @@ class _BookLibraryScreenState extends State<BookLibraryScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ThemeModeButton extends StatelessWidget {
+  const _ThemeModeButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ReadingSettingsProvider>(
+      builder: (context, settings, _) {
+        final icon = switch (settings.themeMode) {
+          ThemeMode.light => Icons.light_mode_rounded,
+          ThemeMode.dark => Icons.dark_mode_rounded,
+          ThemeMode.system => Icons.brightness_auto_rounded,
+        };
+        final options = [
+          (ThemeMode.system, 'Theo hệ thống', Icons.brightness_auto_rounded),
+          (ThemeMode.light, 'Sáng', Icons.light_mode_rounded),
+          (ThemeMode.dark, 'Tối', Icons.dark_mode_rounded),
+        ];
+        return PopupMenuButton<ThemeMode>(
+          tooltip: 'Chế độ giao diện',
+          icon: Icon(icon),
+          onSelected: settings.updateThemeMode,
+          itemBuilder: (context) => options
+              .map(
+                (option) => PopupMenuItem<ThemeMode>(
+                  value: option.$1,
+                  child: Row(
+                    children: [
+                      Icon(option.$3, color: Theme.of(context).iconTheme.color),
+                      const SizedBox(width: 12),
+                      Text(option.$2),
+                      const Spacer(),
+                      if (settings.themeMode == option.$1)
+                        const Icon(Icons.check_rounded),
+                    ],
+                  ),
+                ),
+              )
+              .toList(),
+        );
+      },
+    );
+  }
+}
+
+class _BookCover extends StatelessWidget {
+  final String? coverUrl;
+  final BookSource source;
+
+  const _BookCover({
+    required this.coverUrl,
+    required this.source,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final gradient = LinearGradient(
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+      colors: [
+        colorScheme.primary,
+        colorScheme.primary.withValues(alpha: 0.65),
+      ],
+    );
+
+    Widget cover = Container(
+      width: 84,
+      height: 108,
+      decoration: BoxDecoration(
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: const Icon(Icons.menu_book_rounded, size: 42, color: Colors.white),
+    );
+
+    if (coverUrl != null && coverUrl!.isNotEmpty) {
+      cover = ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: Image.network(
+          coverUrl!,
+          width: 84,
+          height: 108,
+          fit: BoxFit.cover,
+          errorBuilder: (_, __, ___) => Container(
+            width: 84,
+            height: 108,
+            decoration: BoxDecoration(
+              gradient: gradient,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Icon(Icons.wifi_off_rounded, color: Colors.white70, size: 32),
+          ),
+        ),
+      );
+    }
+
+    return Stack(
+      children: [
+        cover,
+        Positioned(
+          right: 6,
+          top: 6,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              source == BookSource.asset ? 'Offline' : 'API',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
